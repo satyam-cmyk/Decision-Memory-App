@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { initializeDatabase } from '@/lib';
+import { seedDatabase } from '@/lib/seedDatabase';
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
@@ -11,6 +12,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     const init = async () => {
       try {
         await initializeDatabase();
+        await seedDatabase();
         setIsReady(true);
       } catch (err) {
         console.error('Failed to initialize database:', err);

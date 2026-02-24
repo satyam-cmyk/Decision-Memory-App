@@ -12,6 +12,7 @@ interface DecisionWithReview extends Decision {
 
 export default function TimelinePage() {
   const [decisions, setDecisions] = useState<DecisionWithReview[]>([]);
+  const [selectedType, setSelectedType] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     total: 0,
@@ -160,6 +161,26 @@ export default function TimelinePage() {
           </div>
         </div>
 
+      {/* Filter */}
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by type:</label>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="px-3 py-2 rounded border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm text-gray-700 dark:text-gray-300"
+          >
+            <option value="all">All</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="finance">Finance</option>
+            <option value="health">Health</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">Showing: {selectedType === 'all' ? decisions.length : decisions.filter(d => d.decision_type === selectedType).length} items</div>
+      </div>
+
       {/* Decision Cards */}
       {decisions.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-12 text-center">
@@ -170,7 +191,9 @@ export default function TimelinePage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {decisions.map((decision) => (
+          {(
+            (selectedType === 'all' ? decisions : decisions.filter((d) => d.decision_type === selectedType))
+          ).map((decision) => (
             <div key={decision.id} className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 overflow-hidden hover:border-gray-300 dark:hover:border-slate-700 hover:shadow-md dark:hover:shadow-lg transition-all">
               {/* Decision Header */}
               <div className="p-6 border-b border-gray-200 dark:border-slate-800">
